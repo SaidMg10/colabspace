@@ -1,34 +1,36 @@
 package main
 
 import (
-	"github.com/SaidMg10/colabspace/internal/api/router"
-	db "github.com/SaidMg10/colabspace/internal/database"
-	"github.com/SaidMg10/colabspace/internal/server"
-	"github.com/SaidMg10/colabspace/internal/store"
+	"github.com/SaidMg10/colabspace/internal/app"
+	"github.com/SaidMg10/colabspace/internal/config"
+	"github.com/SaidMg10/colabspace/internal/database"
 	"go.uber.org/zap"
 )
 
 func main() {
-	cfg := server.LoadConfig()
+	cfg := config.LoadConfig()
+
 	logger := zap.Must(zap.NewProduction()).Sugar()
 	defer logger.Sync()
 
-	db, err := db.New(cfg.Db.Addr, cfg.Db.MaxOpenConns, cfg.Db.MaxIdleConns, cfg.Db.MaxIdleTime)
+	db, err := database.New(
+		cfg.Database.DSN,
+		cfg.Database.MaxOpenConns,
+		cfg.Database.MaxIdleConns,
+		cfg.Database.MaxIdleTime,
+	)
 	if err != nil {
 		logger.Fatal(err)
 	}
 	defer db.Close()
 	logger.Info("database connection pool established")
 
-	store := store.NewStorage(db)
-
-	app := &server.Application{
-		Config: cfg,
+	app := &app.Application{
+		Config: &cfg,
 		Logger: logger,
-		Store:  store,
 	}
 
-	mux := router.Mount(app)
-
-	logger.Fatal(app.Run(mux))
+	if err := app.Run(); err != nil {
+		logger.Fatal(err)
+	}
 }
