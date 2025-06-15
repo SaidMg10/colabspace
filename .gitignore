@@ -1,0 +1,48 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Output of the go build command
+/build/
+/bin/
+/out/
+/dist/
+
+# Local dependency directories (if using Go modules)
+vendor/
+
+# Go workspace files
+*.mod
+*.sum
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage and profiling files
+*.cover
+*.cov
+*.prof
+
+# Misc
+*.tmp
+*.cache
+*.bak
+*.old
+
+# Dependency management tools
+/go.sum
+
