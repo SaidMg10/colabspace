@@ -8,8 +8,8 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-func New(addr string, maxOpenConns, maxIdleConns int, maxIdleTime time.Duration) (*sql.DB, error) {
-	db, err := sql.Open("pgx", addr)
+func New(dsn string, maxOpenConns, maxIdleConns int, maxIdleTime time.Duration) (*sql.DB, error) {
+	db, err := sql.Open("pgx", dsn)
 	if err != nil {
 		return nil, err
 	}

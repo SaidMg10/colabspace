@@ -11,14 +11,17 @@ import (
 	"time"
 
 	"github.com/SaidMg10/colabspace/internal/config"
+	"github.com/SaidMg10/colabspace/internal/storage"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
 type Application struct {
-	Config *config.Config
-	Logger *zap.SugaredLogger
-	Router *gin.Engine
+	Config  *config.Config
+	Logger  *zap.SugaredLogger
+	Router  *gin.Engine
+	Store   storage.Storage
+	Service Services
 }
 
 func (app *Application) Run() error {

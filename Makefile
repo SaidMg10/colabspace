@@ -2,7 +2,7 @@ include .env
 export
 
 # Configuración
-DB_URL ?= $(DB_ADDR)
+DB_URL ?= $(DB_DSN)
 MIGRATIONS_DIR := ./migrate/migrations
 
 

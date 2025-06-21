@@ -34,6 +34,23 @@ type AppConfig struct {
 	Env         string
 	ApiURL      string
 	FrontendURL string
+	Auth        AuthConfig
+}
+
+type AuthConfig struct {
+	Basic BasicConfig
+	Token TokenConfig
+}
+
+type TokenConfig struct {
+	Secret string
+	Exp    time.Duration
+	Iss    string
+}
+
+type BasicConfig struct {
+	User string
+	Pass string
 }
 
 func LoadConfig() Config {
@@ -59,6 +76,17 @@ func LoadConfig() Config {
 			Env:         env.GetString("ENV", "development"),
 			ApiURL:      env.GetString("API_URL", ""),
 			FrontendURL: env.GetString("FRONTEND_URL", ""),
+			Auth: AuthConfig{
+				Basic: BasicConfig{
+					User: env.GetString("AUTH_BASIC_USER", ""),
+					Pass: env.GetString("AUTH_BASIC_PASS", ""),
+				},
+				Token: TokenConfig{
+					Secret: env.GetString("AUTH_TOKEN_SECRET", "Pacoco"),
+					Exp:    env.GetDuration("AUTH_TOKEN_EXP", time.Hour*24),
+					Iss:    env.GetString("AUTH_TOKEN_ISS", "myapp"),
+				},
+			},
 		},
 	}
 }
