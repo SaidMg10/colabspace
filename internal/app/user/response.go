@@ -5,13 +5,13 @@ import (
 )
 
 type CreateUserResponse struct {
-	ID        int64  `json:"id"`
-	CreatedAt string `json:"created_at"`
+	ID        int64     `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type UpdateUserResponse struct {
-	ID        int64  `json:"id"`
-	UpdatedAt string `json:"updated_at"`
+	ID        int64     `json:"id"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type UserResponse struct {
@@ -22,8 +22,8 @@ type UserResponse struct {
 	Email     string     `json:"email"`
 	IsActive  bool       `json:"is_active"`
 	Role      Role       `json:"role"`
-	CreatedAt string     `json:"created_at"`
-	UpdatedAt string     `json:"updated_at"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at"`
 }
 

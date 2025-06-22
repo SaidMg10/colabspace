@@ -8,14 +8,6 @@ MIGRATIONS_DIR := ./migrate/migrations
 
 # Comandos
 
-# Ejecuta migraciones hacia arriba
-migrate-up:
-	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" up
-
-# Ejecuta migraciones hacia abajo (rollback)
-migrate-down:
-	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" down
-
 # Crear una nueva migración (vacía)
 migration:
 	@if [ -z "$(MIGRATION_NAME)" ]; then \
@@ -24,17 +16,37 @@ migration:
 	fi
 	goose -dir $(MIGRATIONS_DIR) create $(MIGRATION_NAME) sql
 
-# Ver el estado de las migraciones
-status:
-	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" status
+# Ejecuta migraciones hacia arriba
+migrate-up:
+	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" up
 
 # Ejecutar hasta una versión específica
-migrate-to:
+migrate-up-to:
 	@if [ -z "$(VERSION)" ]; then \
 		echo "Necesitas especificar VERSION=x"; \
 		exit 1; \
 	fi
 	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" $(VERSION)
+
+# Ejecuta solo una migración hacia arriba (up by one)
+migrate-up-by-one:
+	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" up-by-one
+
+# Ejecuta migraciones hacia abajo (rollback)
+migrate-down:
+	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" down
+
+# Revertir migraciones hasta una versión específica (down to)
+migrate-down-to:
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Necesitas especificar VERSION=x"; \
+		exit 1; \
+	fi
+	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" down-to $(VERSION)
+
+# Ver el estado de las migraciones
+status:
+	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" status
 
 # Limpiar migraciones (opcional, si usas archivos temporales)
 clean:

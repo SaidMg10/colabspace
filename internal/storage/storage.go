@@ -4,16 +4,19 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/SaidMg10/colabspace/internal/app/board"
 	"github.com/SaidMg10/colabspace/internal/app/user"
 )
 
 type Storage struct {
-	Users user.UserRepository
+	Users  user.UserRepository
+	Boards board.BoardRepository
 }
 
 func NewStorage(db *sql.DB) Storage {
 	return Storage{
-		Users: &UserStore{db},
+		Users:  &UserStore{db},
+		Boards: &BoardStore{db},
 	}
 }
 

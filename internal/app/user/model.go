@@ -17,8 +17,8 @@ type User struct {
 	Password  security.Password `json:"-"`
 	IsActive  bool              `json:"is_active"`
 	Role      Role              `json:"role"`
-	CreatedAt string            `json:"created_at"`
-	UpdatedAt string            `json:"updated_at"`
+	CreatedAt time.Time         `json:"created_at"`
+	UpdatedAt time.Time         `json:"updated_at"`
 	DeletedAt *time.Time        `json:"deleted_at"`
 }
 

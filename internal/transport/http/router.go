@@ -33,15 +33,17 @@ func NewRouter(s *app.Services, logger *zap.SugaredLogger, authenticator auth.Au
 	// Registramos una ruta GET que responde en /api/v1/health
 
 	v1.GET("/health", healthHandler.Check)
-
+	// Registro de Auth
+	authHandler := handlers.NewAuthHandler(&s.Auth, logger)
+	authHandler.RegisterRoutes(v1)
 	// Aquí podrías registrar más handlers, como por ejemplo usuarios:
 	// Registro de User
 	v1.Use(middleware.AuthTokenMiddleware())
 	userHandler := handlers.NewUserHandler(&s.User, logger)
 	userHandler.RegisterRoutes(v1)
-	// Registro de Auth
-	authHandler := handlers.NewAuthHandler(&s.Auth, logger)
-	authHandler.RegisterRoutes(v1)
+	// Registro de Board
+	boardHandler := handlers.NewBoardHandler(&s.Board, logger, middleware)
+	boardHandler.RegisterRoutes(v1)
 
 	return router
 }
