@@ -44,6 +44,9 @@ func NewRouter(s *app.Services, logger *zap.SugaredLogger, authenticator auth.Au
 	// Registro de Board
 	boardHandler := handlers.NewBoardHandler(&s.Board, logger, middleware)
 	boardHandler.RegisterRoutes(v1)
+	// Registro de Añadir Usuarios
+	boardUsersHandler := handlers.NewBoardUsersHandler(&s.BoardUsers, logger, middleware)
+	boardUsersHandler.RegisterRoutes(v1)
 
 	return router
 }

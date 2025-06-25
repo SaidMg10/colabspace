@@ -53,6 +53,17 @@ func (s *Service) Get(ctx context.Context) ([]BoardResponse, error) {
 	return resp, nil
 }
 
+func (s *Service) GetBoardsForUser(ctx context.Context, userID int64) ([]BoardForUsersResponse, error) {
+	boards, err := s.Repo.GetBoardsForUser(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := MapToBoardsForUsersResponse(boards)
+
+	return resp, nil
+}
+
 func (s *Service) GetById(ctx context.Context, id int64) (*BoardResponse, error) {
 	board, err := s.Repo.GetById(ctx, id)
 	if err != nil {

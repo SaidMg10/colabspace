@@ -33,6 +33,18 @@ func MapToBoardsResponse(b []Board) []BoardResponse {
 	return resp
 }
 
+func MapToBoardsForUsersResponse(b []Board) []BoardForUsersResponse {
+	resp := make([]BoardForUsersResponse, len(b))
+	for i, v := range b {
+		resp[i] = BoardForUsersResponse{
+			ID:          v.ID,
+			Name:        v.Name,
+			Description: v.Description,
+		}
+	}
+	return resp
+}
+
 func MapToBoardResponse(b *Board) *BoardResponse {
 	resp := &BoardResponse{
 		ID:          b.ID,

@@ -18,3 +18,9 @@ type BoardResponse struct {
 	Description string `json:"Description"`
 	UserID      int64  `json:"user_id"`
 }
+
+type BoardForUsersResponse struct {
+	ID          int64  `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"Description"`
+}

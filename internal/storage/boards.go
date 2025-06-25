@@ -49,7 +49,7 @@ func (s *BoardStore) Get(ctx context.Context) ([]board.Board, error) {
 	if err != nil {
 		return nil, err
 	}
-	rows.Close()
+	defer rows.Close()
 
 	var boards []board.Board
 
@@ -60,6 +60,7 @@ func (s *BoardStore) Get(ctx context.Context) ([]board.Board, error) {
 			&b.ID,
 			&b.Name,
 			&b.Description,
+			&b.UserID,
 			&b.CreatedAt,
 			&b.UpdatedAt,
 			&b.DeletedAt,
@@ -71,6 +72,32 @@ func (s *BoardStore) Get(ctx context.Context) ([]board.Board, error) {
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err
+	}
+	return boards, nil
+}
+
+func (s *BoardStore) GetBoardsForUser(ctx context.Context, userID int64) ([]board.Board, error) {
+	query := `
+		SELECT b.id, b.name, b.description
+		FROM boards b
+		LEFT JOIN board_users bu ON b.id = bu.board_id
+		WHERE b.user_id = $1 OR bu.user_id = $1
+		GROUP BY b.id
+	`
+	rows, err := s.db.QueryContext(ctx, query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var boards []board.Board
+	for rows.Next() {
+		var b board.Board
+		err := rows.Scan(&b.ID, &b.Name, &b.Description)
+		if err != nil {
+			return nil, err
+		}
+		boards = append(boards, b)
 	}
 	return boards, nil
 }

@@ -127,3 +127,14 @@ func (s *Service) GetUserById(ctx context.Context, id int64) (*User, error) {
 
 	return user, nil
 }
+
+func (s *Service) GetByUsernameOrEmail(ctx context.Context, value string) (*User, error) {
+	user, err := s.Repo.GetByUsernameOrEmail(ctx, value)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, utils.ErrNotFound
+	}
+	return user, nil
+}

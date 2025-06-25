@@ -7,6 +7,7 @@ type UserRepository interface {
 	Get(ctx context.Context) ([]User, error)
 	GetById(ctx context.Context, id int64) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
+	GetByUsernameOrEmail(ctx context.Context, value string) (*User, error)
 	Update(ctx context.Context, user *User) error
 	Delete(ctx context.Context, id int64) error
 }

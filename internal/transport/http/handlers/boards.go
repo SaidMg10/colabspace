@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/SaidMg10/colabspace/internal/app/board"
+	"github.com/SaidMg10/colabspace/internal/app/user"
 	"github.com/SaidMg10/colabspace/internal/transport/http/middleware"
 	"github.com/SaidMg10/colabspace/internal/utils"
 	"github.com/SaidMg10/colabspace/internal/validation"
@@ -36,10 +37,11 @@ func (h *BoardHandler) RegisterRoutes(r *gin.RouterGroup) {
 		// Ruta POST /boards/ para crear un nuevo usuario.
 		// El método Create es el handler que procesará esta ruta.
 		boards.POST("/", h.Create)
-		boards.GET("/", h.Get)
-		boards.GET("/:id", h.GetById)
-		boards.PATCH("/:id", h.Middleware.CheckBoardOwnership(), h.Update)
-		boards.DELETE("/:id", h.Middleware.CheckBoardOwnership(), h.Delete)
+		boards.GET("/", h.Middleware.CheckRole(user.RoleAdmin), h.Get)
+		boards.GET("/public", h.GetForUsers)
+		boards.GET("/:boardID", h.GetById)
+		boards.PATCH("/:boardID", h.Middleware.CheckBoardOwnership(), h.Update)
+		boards.DELETE("/:boardID", h.Middleware.CheckBoardOwnership(), h.Delete)
 	}
 }
 
@@ -87,12 +89,34 @@ func (h *BoardHandler) Get(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"user": b,
+		"boards": b,
+	})
+}
+
+func (h *BoardHandler) GetForUsers(c *gin.Context) {
+	user, err := middleware.GetUserFromContext(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error has ocurred"})
+		return
+	}
+	ctx := c.Request.Context()
+	b, err := h.Service.GetBoardsForUser(ctx, user.ID)
+	if err != nil {
+		h.Logger.Errorf("Error getting user: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+		return
+	}
+	if len(b) == 0 {
+		c.Status(http.StatusNoContent)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"boards": b,
 	})
 }
 
 func (h *BoardHandler) GetById(c *gin.Context) {
-	stringId := c.Param("id")
+	stringId := c.Param("boardID")
 	id, err := strconv.ParseInt(stringId, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
@@ -120,7 +144,7 @@ func (h *BoardHandler) GetById(c *gin.Context) {
 
 func (h *BoardHandler) Update(c *gin.Context) {
 	// Obtenemos el parametro del id
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	id, err := strconv.ParseInt(c.Param("boardID"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid board id"})
 		return
@@ -155,7 +179,7 @@ func (h *BoardHandler) Update(c *gin.Context) {
 
 func (h *BoardHandler) Delete(c *gin.Context) {
 	// Obtenemos el parametro
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	id, err := strconv.ParseInt(c.Param("boardID"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user id"})
 		return

@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (m *Middleware) CheckBoardOwnership() gin.HandlerFunc {
+func (m *Middleware) CheckUserMembership() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Extraer el user ID del contexto
 		usr, exists := c.Get(userKey)
@@ -34,15 +34,29 @@ func (m *Middleware) CheckBoardOwnership() gin.HandlerFunc {
 		}
 
 		ctx := c.Request.Context()
+
+		// Verificar si es owner
 		board, err := m.Services.Board.GetById(ctx, boardID)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "board not found with this id"})
 			c.Abort()
 			return
 		}
-		// Verificar propiedad
-		if board.UserID != userID {
-			c.JSON(http.StatusForbidden, gin.H{"error": "forbidden: you are not the owner"})
+
+		if board.UserID == userID {
+			c.JSON(http.StatusForbidden, gin.H{"error": "forbidden: you're the owner"})
+			c.Abort()
+			return
+		}
+
+		isMember, err := m.Services.BoardUsers.Repo.IsMember(ctx, boardID, userID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error checking membership"})
+			c.Abort()
+			return
+		}
+		if !isMember {
+			c.JSON(http.StatusForbidden, gin.H{"error": "forbidden: not a member"})
 			c.Abort()
 			return
 		}

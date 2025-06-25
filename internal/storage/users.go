@@ -167,6 +167,34 @@ func (s *UserStore) GetByEmail(ctx context.Context, email string) (*user.User, e
 	return user, nil
 }
 
+func (s UserStore) GetByUsernameOrEmail(ctx context.Context, value string) (*user.User, error) {
+	query := `
+		SELECT id, username, email
+		FROM users
+		WHERE username = $1 OR email = $1
+		LIMIT 1
+	`
+	ctx, cancel := context.WithTimeout(ctx, config.QueryTimeoutDuration)
+	defer cancel()
+
+	user := &user.User{}
+	err := s.db.QueryRowContext(ctx, query, value).Scan(
+		&user.ID,
+		&user.Username,
+		&user.Email,
+	)
+	if err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			return nil, utils.ErrNotFound
+		default:
+			return nil, err
+		}
+	}
+
+	return user, nil
+}
+
 func (s *UserStore) Update(ctx context.Context, u *user.User) error {
 	query := `
 		UPDATE users

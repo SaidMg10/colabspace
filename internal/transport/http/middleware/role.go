@@ -27,11 +27,12 @@ func (m *Middleware) CheckRole(requiredRoles ...user.Role) gin.HandlerFunc {
 			return
 		}
 		// Validar si el rol del usuario está en los roles requeridos
-		if slices.Contains(requiredRoles, user.Role) {
-			c.Next()
+		if !slices.Contains(requiredRoles, user.Role) {
+			// Respuesta en caso de no cumplir con el rol
+			c.JSON(http.StatusForbidden, gin.H{"error": "insufficient permissions"})
+			c.Abort()
 			return
 		}
-		// Respuesta en caso de no cumplir con el rol
-		c.JSON(http.StatusForbidden, gin.H{"error": "insufficient permissions"})
+		c.Next()
 	}
 }
