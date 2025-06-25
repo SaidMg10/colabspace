@@ -11,7 +11,7 @@
 /bin/
 /out/
 /dist/
-
+/tmp/
 # Local dependency directories (if using Go modules)
 vendor/
 
