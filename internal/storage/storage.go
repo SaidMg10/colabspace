@@ -6,6 +6,7 @@ import (
 
 	"github.com/SaidMg10/colabspace/internal/app/board"
 	boardusers "github.com/SaidMg10/colabspace/internal/app/board_users"
+	"github.com/SaidMg10/colabspace/internal/app/stage"
 	"github.com/SaidMg10/colabspace/internal/app/user"
 )
 
@@ -13,6 +14,7 @@ type Storage struct {
 	Users      user.UserRepository
 	Boards     board.BoardRepository
 	BoardUsers boardusers.BoardUsersRepository
+	Stages     stage.StageRepository
 }
 
 func NewStorage(db *sql.DB) Storage {
@@ -20,6 +22,7 @@ func NewStorage(db *sql.DB) Storage {
 		Users:      &UserStore{db},
 		Boards:     &BoardStore{db},
 		BoardUsers: &BoardUsersStore{db},
+		Stages:     &StageStore{db},
 	}
 }
 
