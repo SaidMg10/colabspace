@@ -37,7 +37,7 @@ func NewService(
 }
 
 // Crear función Login
-func (s *Service) Login(ctx context.Context, login Login) (string, error) {
+func (s *Service) Login(ctx context.Context, login *Login) (string, error) {
 	// Se busca el usuario con el metodo GetByEmail (El usuario debe estar activo)
 	user, err := s.Repo.GetByEmail(ctx, login.Email)
 	if err != nil {
@@ -66,8 +66,8 @@ func (s *Service) Login(ctx context.Context, login Login) (string, error) {
 	return token, nil
 }
 
-func (s *Service) Register(ctx context.Context, createUserRequest user.CreateUserRequest) (*user.CreateUserResponse, error) {
-	u, err := user.MapCreateUserRequestToUser(createUserRequest)
+func (s *Service) Register(ctx context.Context, createUserRequest *user.CreateUserRequest) (*user.CreateUserResponse, error) {
+	u, err := user.MapCreateUserRequestToUser(*createUserRequest)
 	if err != nil {
 		return nil, err
 	}

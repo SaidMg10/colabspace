@@ -45,7 +45,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := h.Service.Login(ctx, payload)
+	token, err := h.Service.Login(ctx, &payload)
 	if err != nil {
 		h.Logger.Warnf("Login failed for email %s: %v", payload.Email, err)
 		c.JSON(401, gin.H{"error": "Invalid email or password"})
@@ -71,7 +71,7 @@ func (h *UserHandler) Register(c *gin.Context) {
 	}
 	ctx := c.Request.Context()
 
-	u, err := h.Service.Create(ctx, cUR)
+	u, err := h.Service.Create(ctx, &cUR)
 	if err != nil {
 		h.Logger.Errorf("Error creating user: %v", err)
 		switch {

@@ -31,8 +31,8 @@ func NewService(repo UserRepository, logger *zap.SugaredLogger) *Service {
 // Recibe un contexto y los datos para crear el usuario.
 // Transforma la contraseña, construye el modelo User,
 // llama al repositorio para persistirlo y devuelve una respuesta o error.
-func (s *Service) Create(ctx context.Context, createUserRequest CreateUserRequest) (*CreateUserResponse, error) {
-	user, err := MapCreateUserRequestToUser(createUserRequest)
+func (s *Service) Create(ctx context.Context, createUserRequest *CreateUserRequest) (*CreateUserResponse, error) {
+	user, err := MapCreateUserRequestToUser(*createUserRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func (s *Service) GetById(ctx context.Context, id int64) (*UserSummaryResponse, 
 	return resp, nil
 }
 
-func (s *Service) Update(ctx context.Context, id int64, updateUserRequest UpdateUserRequest) (*UpdateUserResponse, error) {
+func (s *Service) Update(ctx context.Context, id int64, updateUserRequest *UpdateUserRequest) (*UpdateUserResponse, error) {
 	// Obtenemos el usuario
 	userReq, err := s.Repo.GetById(ctx, id)
 	if err != nil {
@@ -93,7 +93,7 @@ func (s *Service) Update(ctx context.Context, id int64, updateUserRequest Update
 		return nil, utils.ErrNotFound
 	}
 	// Validamos y Pasamos a una funcion todos los datos a validar
-	user, err := MapUpdateUserRequestToUser(updateUserRequest, userReq)
+	user, err := MapUpdateUserRequestToUser(*updateUserRequest, userReq)
 	if err != nil {
 		return nil, err
 	}

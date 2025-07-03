@@ -60,7 +60,7 @@ func (h *UserHandler) Create(c *gin.Context) {
 	}
 	ctx := c.Request.Context()
 
-	u, err := h.Service.Create(ctx, cUR)
+	u, err := h.Service.Create(ctx, &cUR)
 	if err != nil {
 		h.Logger.Errorf("Error creating user: %v", err)
 		switch {
@@ -145,7 +145,7 @@ func (h *UserHandler) Update(c *gin.Context) {
 	// Sacamos el context
 	ctx := c.Request.Context()
 	// Pasamos el payload y el id a la funcion del service
-	u, err := h.Service.Update(ctx, id, uUR)
+	u, err := h.Service.Update(ctx, id, &uUR)
 	if err != nil {
 		h.Logger.Errorf("Error deleting user: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})

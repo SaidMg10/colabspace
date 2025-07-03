@@ -24,9 +24,9 @@ func NewService(repo BoardRepository, logger *zap.SugaredLogger) *Service {
 	}
 }
 
-func (s *Service) Create(ctx context.Context, cBR CreateBoardRequest) (*CreateBoardResponse, error) {
+func (s *Service) Create(ctx context.Context, cBR *CreateBoardRequest) (*CreateBoardResponse, error) {
 	// Recibimos el payload del handler
-	board, err := MapCreateBoardRequestToBoard(cBR)
+	board, err := MapCreateBoardRequestToBoard(*cBR)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (s *Service) GetById(ctx context.Context, id int64) (*BoardResponse, error)
 	return resp, nil
 }
 
-func (s *Service) Update(ctx context.Context, id int64, uBR UpdateBoardRequest) (*UpdateBoardResponse, error) {
+func (s *Service) Update(ctx context.Context, id int64, uBR *UpdateBoardRequest) (*UpdateBoardResponse, error) {
 	// Obtenemos el usuario
 	boardReq, err := s.Repo.GetById(ctx, id)
 	if err != nil {
@@ -86,7 +86,7 @@ func (s *Service) Update(ctx context.Context, id int64, uBR UpdateBoardRequest) 
 		return nil, utils.ErrNotFound
 	}
 	// Validamos y Pasamos a una funcion todos los datos a validar
-	board, err := MapUpdateBoardRequestToBoard(uBR, boardReq)
+	board, err := MapUpdateBoardRequestToBoard(*uBR, boardReq)
 	if err != nil {
 		return nil, err
 	}

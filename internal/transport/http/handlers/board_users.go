@@ -27,14 +27,18 @@ func NewBoardUsersHandler(service *boardusers.Service, logger *zap.SugaredLogger
 
 func (h *BoardUsersHandler) RegisterRoutes(r *gin.RouterGroup) {
 	// Creamos un subgrupo /users para organizar las rutas relacionadas con usuarios.
-	boardUsers := r.Group("/boards")
+	boards := r.Group("/boards")
 	{
-		// Ruta POST /users/ para crear un nuevo usuario.
-		// El método Create es el handler que procesará esta ruta.
-		boardUsers.POST("/:boardID/members", h.Middleware.CheckBoardOwnership(), h.Add)
-		boardUsers.GET("/:boardID/members", h.Middleware.CheckBoardMembership(), h.Get)
-		boardUsers.DELETE("/:boardID/members/leave", h.Middleware.CheckUserMembership(), h.Leave)
-		boardUsers.DELETE("/:boardID/members/:userID", h.Middleware.CheckBoardOwnership(), h.Delete)
+		boardUsers := boards.Group("/:boardID/members")
+		{
+			// Ruta POST /users/ para crear un nuevo usuario.
+			// El método Create es el handler que procesará esta ruta.
+			boardUsers.POST("/", h.Middleware.CheckBoardOwnership(), h.Add)
+			boardUsers.GET("/", h.Middleware.CheckBoardMembership(), h.Get)
+			boardUsers.DELETE("/leave", h.Middleware.CheckUserMembership(), h.Leave)
+			boardUsers.DELETE("/:userID", h.Middleware.CheckBoardOwnership(), h.Delete)
+
+		}
 	}
 }
 

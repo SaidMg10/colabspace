@@ -66,7 +66,7 @@ func (h *BoardHandler) Create(c *gin.Context) {
 		return
 	}
 	ctx := c.Request.Context()
-	b, err := h.Service.Create(ctx, cBR)
+	b, err := h.Service.Create(ctx, &cBR)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "error has ocurred"})
 		return
@@ -166,7 +166,7 @@ func (h *BoardHandler) Update(c *gin.Context) {
 	// Sacamos el context
 	ctx := c.Request.Context()
 	// Pasamos el payload y el id a la funcion del service
-	b, err := h.Service.Update(ctx, id, uBR)
+	b, err := h.Service.Update(ctx, id, &uBR)
 	if err != nil {
 		h.Logger.Errorf("Error deleting board: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})

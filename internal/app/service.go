@@ -4,6 +4,7 @@ import (
 	"github.com/SaidMg10/colabspace/internal/app/auth"
 	"github.com/SaidMg10/colabspace/internal/app/board"
 	boardusers "github.com/SaidMg10/colabspace/internal/app/board_users"
+	"github.com/SaidMg10/colabspace/internal/app/stage"
 	"github.com/SaidMg10/colabspace/internal/app/user"
 	"github.com/SaidMg10/colabspace/internal/config"
 	"github.com/SaidMg10/colabspace/internal/storage"
@@ -20,6 +21,7 @@ type Services struct {
 	Auth       auth.Service
 	Board      board.Service
 	BoardUsers boardusers.Service
+	Stage      stage.Service
 }
 
 // NewServices es el constructor del contenedor de servicios de la app.
@@ -42,5 +44,6 @@ func NewServices(storage storage.Storage, logger *zap.SugaredLogger, authCfg con
 			storage.Users,
 			logger,
 		),
+		Stage: *stage.NewService(storage.Stages, logger),
 	}
 }
